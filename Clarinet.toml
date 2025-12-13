@@ -1,0 +1,49 @@
+[project]
+name = 'stackslink'
+description = ''
+authors = []
+telemetry = true
+cache_dir = './.cache'
+requirements = []
+[contracts.oracle]
+path = 'contracts/oracle.clar'
+clarity_version = 3
+epoch = 3.1
+
+[contracts.stackslink-core]
+path = 'contracts/core/stackslink-core.clar'
+clarity_version = 3
+epoch = 3.1
+
+[contracts.price-feed]
+path = 'contracts/feeds/price-feed.clar'
+clarity_version = 3
+epoch = 3.1
+
+[contracts.node-registry]
+path = 'contracts/operators/node-registry.clar'
+clarity_version = 3
+epoch = 3.1
+
+[contracts.oracle-trait]
+path = 'contracts/traits/oracle-trait.clar'
+clarity_version = 3
+epoch = 3.1
+
+[contracts.access-control]
+path = 'contracts/governance/access-control.clar'
+clarity_version = 3
+epoch = 3.1
+
+[repl.analysis]
+passes = ['check_checker']
+
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false
+
+[repl.remote_data]
+enabled = false
+api_url = 'https://api.hiro.so'
