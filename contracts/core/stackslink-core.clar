@@ -43,15 +43,17 @@
         (try! (stx-transfer? payment tx-sender (as-contract tx-sender)))
 
         ;; 2. Generate request ID
-        ;; TODO: Generate request ID
+        (let ((request-id (+ (var-get request-nonce) u1)))
+            (var-set request-nonce request-id)
 
-        ;; 3. Store request details
-        ;; TODO: Store request details
+            ;; 3. Store request details
+            ;; TODO: Store request details
 
-        ;; 4. Emit event for nodes to pick up
-        ;; TODO: Emit event for nodes to pick up
+            ;; 4. Emit event for nodes to pick up
+            ;; TODO: Emit event for nodes to pick up
 
-        (ok u0)
+            (ok request-id)
+        )
     )
 )
 
