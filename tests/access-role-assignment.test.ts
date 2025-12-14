@@ -59,4 +59,42 @@ describe("Access Control: Role Assignment", () => {
     );
     expect(hasRole.result).toBeBool(false);
   });
+
+  it("allows admin to revoke a role", () => {
+    // First, grant OPERATOR_MANAGER role to wallet1
+    const grantResult = simnet.callPublicFn(
+      "access-control",
+      "grant-role",
+      [ROLE_OPERATOR_MANAGER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(grantResult.result).toBeOk(Cl.bool(true));
+
+    // Verify wallet1 has the role
+    const hasRoleBefore = simnet.callReadOnlyFn(
+      "access-control",
+      "has-role",
+      [ROLE_OPERATOR_MANAGER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(hasRoleBefore.result).toBeBool(true);
+
+    // Now revoke the role
+    const revokeResult = simnet.callPublicFn(
+      "access-control",
+      "revoke-role",
+      [ROLE_OPERATOR_MANAGER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(revokeResult.result).toBeOk(Cl.bool(true));
+
+    // Verify wallet1 no longer has the role
+    const hasRoleAfter = simnet.callReadOnlyFn(
+      "access-control",
+      "has-role",
+      [ROLE_OPERATOR_MANAGER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(hasRoleAfter.result).toBeBool(false);
+  });
 });
