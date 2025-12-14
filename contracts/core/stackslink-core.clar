@@ -47,7 +47,12 @@
             (var-set request-nonce request-id)
 
             ;; 3. Store request details
-            ;; TODO: Store request details
+            (map-set requests request-id {
+                requester: tx-sender,
+                callback-contract: callback-contract,
+                callback-function: callback-function,
+                status: "pending",
+            })
 
             ;; 4. Emit event for nodes to pick up
             ;; TODO: Emit event for nodes to pick up
