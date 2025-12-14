@@ -97,4 +97,33 @@ describe("Access Control: Role Assignment", () => {
     );
     expect(hasRoleAfter.result).toBeBool(false);
   });
+
+  it("prevents non-admin from revoking roles", () => {
+    // First, grant UPGRADER role to wallet1 (by deployer)
+    const grantResult = simnet.callPublicFn(
+      "access-control",
+      "grant-role",
+      [ROLE_UPGRADER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(grantResult.result).toBeOk(Cl.bool(true));
+
+    // wallet2 (non-admin) tries to revoke the role from wallet1
+    const revokeResult = simnet.callPublicFn(
+      "access-control",
+      "revoke-role",
+      [ROLE_UPGRADER, Cl.standardPrincipal(wallet1)],
+      wallet2
+    );
+    expect(revokeResult.result).toBeErr(Cl.uint(100)); // ERR-UNAUTHORIZED
+
+    // Verify wallet1 still has the role
+    const hasRole = simnet.callReadOnlyFn(
+      "access-control",
+      "has-role",
+      [ROLE_UPGRADER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(hasRole.result).toBeBool(true);
+  });
 });
