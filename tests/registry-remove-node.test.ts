@@ -48,4 +48,49 @@ describe("Node Registry: Remove Node", () => {
     );
     expect(nodeAfter.result).toBeNone();
   });
+
+  it("revokes authorization when node is removed", () => {
+    // Register and approve a node
+    simnet.callPublicFn(
+      "node-registry",
+      "register-node",
+      [samplePublicKey, sampleEndpoint],
+      wallet1
+    );
+
+    // Approve the node (only owner can do this)
+    const approveResult = simnet.callPublicFn(
+      "node-registry",
+      "approve-node",
+      [Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(approveResult.result).toBeOk(Cl.bool(true));
+
+    // Verify node is authorized
+    const isAuthorizedBefore = simnet.callReadOnlyFn(
+      "node-registry",
+      "is-authorized",
+      [Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(isAuthorizedBefore.result).toBeBool(true);
+
+    // Remove the node
+    simnet.callPublicFn(
+      "node-registry",
+      "remove-node",
+      [Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+
+    // Verify authorization is revoked
+    const isAuthorizedAfter = simnet.callReadOnlyFn(
+      "node-registry",
+      "is-authorized",
+      [Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(isAuthorizedAfter.result).toBeBool(false);
+  });
 });
