@@ -126,4 +126,56 @@ describe("Access Control: Role Assignment", () => {
     );
     expect(hasRole.result).toBeBool(true);
   });
+
+  it("allows granting multiple different roles to same account", () => {
+    // Grant all three roles to wallet1
+    const grantAdmin = simnet.callPublicFn(
+      "access-control",
+      "grant-role",
+      [ROLE_ADMIN, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(grantAdmin.result).toBeOk(Cl.bool(true));
+
+    const grantOperator = simnet.callPublicFn(
+      "access-control",
+      "grant-role",
+      [ROLE_OPERATOR_MANAGER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(grantOperator.result).toBeOk(Cl.bool(true));
+
+    const grantUpgrader = simnet.callPublicFn(
+      "access-control",
+      "grant-role",
+      [ROLE_UPGRADER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(grantUpgrader.result).toBeOk(Cl.bool(true));
+
+    // Verify all roles are assigned
+    const hasAdmin = simnet.callReadOnlyFn(
+      "access-control",
+      "has-role",
+      [ROLE_ADMIN, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(hasAdmin.result).toBeBool(true);
+
+    const hasOperator = simnet.callReadOnlyFn(
+      "access-control",
+      "has-role",
+      [ROLE_OPERATOR_MANAGER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(hasOperator.result).toBeBool(true);
+
+    const hasUpgrader = simnet.callReadOnlyFn(
+      "access-control",
+      "has-role",
+      [ROLE_UPGRADER, Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(hasUpgrader.result).toBeBool(true);
+  });
 });
