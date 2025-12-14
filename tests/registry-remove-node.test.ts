@@ -93,4 +93,41 @@ describe("Node Registry: Remove Node", () => {
     );
     expect(isAuthorizedAfter.result).toBeBool(false);
   });
+
+  it("allows node to remove itself (self-remove)", () => {
+    // Register a node as wallet1
+    simnet.callPublicFn(
+      "node-registry",
+      "register-node",
+      [samplePublicKey, sampleEndpoint],
+      wallet1
+    );
+
+    // Verify node exists
+    const nodeBefore = simnet.callReadOnlyFn(
+      "node-registry",
+      "get-node",
+      [Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(nodeBefore.result).not.toBeNone();
+
+    // Node removes itself
+    const removeResult = simnet.callPublicFn(
+      "node-registry",
+      "remove-node",
+      [Cl.standardPrincipal(wallet1)],
+      wallet1
+    );
+    expect(removeResult.result).toBeOk(Cl.bool(true));
+
+    // Verify node no longer exists
+    const nodeAfter = simnet.callReadOnlyFn(
+      "node-registry",
+      "get-node",
+      [Cl.standardPrincipal(wallet1)],
+      deployer
+    );
+    expect(nodeAfter.result).toBeNone();
+  });
 });
