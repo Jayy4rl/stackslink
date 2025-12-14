@@ -55,7 +55,13 @@
             })
 
             ;; 4. Emit event for nodes to pick up
-            ;; TODO: Emit event for nodes to pick up
+            (print {
+                event: "OracleRequest",
+                request-id: request-id,
+                job-id: job-id,
+                requester: tx-sender,
+                payment: payment,
+            })
 
             (ok request-id)
         )
