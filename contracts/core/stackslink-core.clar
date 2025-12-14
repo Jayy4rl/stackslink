@@ -16,7 +16,7 @@
 (define-constant REQUEST-EXPIRY-BLOCKS u144) ;; ~24 hours
 
 ;; data vars
-;; TODO: Track request IDs (nonce)
+(define-data-var request-nonce uint u0)
 
 ;; data maps
 ;; TODO: Map request-id to request-details (requester, callback, status)
